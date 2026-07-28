@@ -3,6 +3,9 @@ const { handleError } = require("../utils/errors");
 
 const createItem = (req, res) => {
   const { name, weather, imageURL } = req.body;
+  const userId = req.user && req.user._id;
+
+  console.log("Authenticated user ID:", userId);
 
   ClothingItem.create({ name, weather, imageURL })
     .then((item) => {
@@ -45,4 +48,55 @@ const deleteItem = (req, res) => {
     });
 };
 
-module.exports = { createItem, getItems, updateItem, deleteItem };
+const likeItem = (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.user && req.user._id;
+
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $addToSet: { likes: userId } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => {
+      if (item.likes.includes(userId)) {
+        return res.status(200).send({ data: item });
+      }
+
+      return res.status(200).send({ data: item });
+    })
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Item not found" });
+      }
+      return handleError(res, err);
+    });
+};
+
+const unlikeItem = (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.user && req.user._id;
+
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $pull: { likes: userId } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => res.status(200).send({ data: item }))
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "Item not found" });
+      }
+      return handleError(res, err);
+    });
+};
+
+module.exports = {
+  createItem,
+  getItems,
+  updateItem,
+  deleteItem,
+  likeItem,
+  unlikeItem,
+};
