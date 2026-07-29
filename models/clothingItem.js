@@ -4,15 +4,17 @@ const validator = require("validator");
 const clothingItem = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "name is required"],
+    minlength: [2, "name must be at least 2 characters"],
+    maxlength: [30, "name must be at most 30 characters"],
   },
   weather: {
     type: String,
-    required: true,
+    required: [true, "weather is required"],
   },
   imageURL: {
     type: String,
-    required: true,
+    required: [true, "imageUrl is required"],
     vvalidate: {
       validator(value) {
         return validator.isURL(value);
