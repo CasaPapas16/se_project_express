@@ -1,6 +1,5 @@
 const ClothingItem = require("../models/clothingItem");
 const {
-  handleError,
   DEFAULT_ERROR_STATUS,
   VALIDATION_ERROR_STATUS,
   CAST_ERROR_STATUS,
