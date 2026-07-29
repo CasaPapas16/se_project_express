@@ -9,7 +9,7 @@ const createItem = (req, res) => {
 
   ClothingItem.create({ name, weather, imageURL })
     .then((item) => {
-      res.send({ data: item });
+      res.status(201).send(item);
     })
     .catch((err) => {
       console.error(err);
@@ -29,9 +29,9 @@ const updateItem = (req, res) => {
   const { itemId } = req.params;
   const { imageURL } = req.body;
 
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageURL } })
+  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageURL } }, { new: true })
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
       handleError(res, err);
     });
@@ -58,13 +58,7 @@ const likeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => {
-      if (item.likes.includes(userId)) {
-        return res.status(200).send({ data: item });
-      }
-
-      return res.status(200).send({ data: item });
-    })
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: "Item not found" });
@@ -83,7 +77,7 @@ const unlikeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: "Item not found" });
