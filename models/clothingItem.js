@@ -15,7 +15,7 @@ const clothingItem = new mongoose.Schema({
   imageURL: {
     type: String,
     required: [true, "imageUrl is required"],
-    vvalidate: {
+    validate: {
       validator(value) {
         return validator.isURL(value);
       },
