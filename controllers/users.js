@@ -12,7 +12,9 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(NOT_FOUND_ERROR_STATUS).send({ message: err.message });
+      return res
+        .status(NOT_FOUND_ERROR_STATUS)
+        .send({ message: "Invalid data" });
     });
 };
 
@@ -26,9 +28,11 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(VALIDATION_ERROR_STATUS)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
-      return res.status(DEFAULT_ERROR_STATUS).send({ message: "An error has occurred on the server." });
+      return res
+        .status(DEFAULT_ERROR_STATUS)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -46,9 +50,11 @@ const getUser = (req, res) => {
           .send({ message: "User not found" });
       }
       if (err.name === "CastError") {
-        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+        return res.status(CAST_ERROR_STATUS).send({ message: "Invalid data" });
       }
-      return res.status(DEFAULT_ERROR_STATUS).send({ message: "An error has occurred on the server." });
+      return res
+        .status(DEFAULT_ERROR_STATUS)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 

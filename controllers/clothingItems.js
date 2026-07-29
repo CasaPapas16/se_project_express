@@ -10,8 +10,6 @@ const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   const userId = req.user && req.user._id;
 
-  console.log("Authenticated user ID:", userId);
-
   ClothingItem.create({
     name,
     weather,
@@ -31,7 +29,7 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(VALIDATION_ERROR_STATUS)
-          .send({ message: err.message });
+          .send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_STATUS)
@@ -43,8 +41,9 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
+      console.error(err);
       if (err.name === "CastError") {
-        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+        return res.status(CAST_ERROR_STATUS).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_STATUS)
@@ -59,13 +58,14 @@ const deleteItem = (req, res) => {
     .orFail()
     .then(() => res.status(200).send({}))
     .catch((err) => {
+      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND_ERROR_STATUS)
           .send({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+        return res.status(CAST_ERROR_STATUS).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_STATUS)
@@ -85,13 +85,14 @@ const likeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
+      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND_ERROR_STATUS)
-          .send({ message: "Item not found" });
+          .send({ message: "Requested resource not found" });
       }
       if (err.name === "CastError") {
-        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+        return res.status(CAST_ERROR_STATUS).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_STATUS)
@@ -111,13 +112,14 @@ const unlikeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
+      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND_ERROR_STATUS)
-          .send({ message: "Item not found" });
+          .send({ message: "Requested resource not found" });
       }
       if (err.name === "CastError") {
-        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+        return res.status(CAST_ERROR_STATUS).send({ message: "Invalid data" });
       }
       return res
         .status(DEFAULT_ERROR_STATUS)
