@@ -15,7 +15,7 @@ const createItem = (req, res) => {
 
   ClothingItem.create({ name, weather, imageURL: normalizedImageUrl })
     .then((item) => {
-      res.status(201).send(item);
+      res.status(201).send({ data: item });
     })
     .catch((err) => {
       console.error(err);
