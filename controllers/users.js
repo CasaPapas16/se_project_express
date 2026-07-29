@@ -28,7 +28,7 @@ const createUser = (req, res) => {
           .status(VALIDATION_ERROR_STATUS)
           .send({ message: err.message });
       }
-      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -48,7 +48,7 @@ const getUser = (req, res) => {
       if (err.name === "CastError") {
         return res.status(CAST_ERROR_STATUS).send({ message: err.message });
       }
-      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: "An error has occurred on the server." });
     });
 };
 
