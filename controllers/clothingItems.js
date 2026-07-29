@@ -1,5 +1,11 @@
 const ClothingItem = require("../models/clothingItem");
-const { handleError } = require("../utils/errors");
+const {
+  handleError,
+  DEFAULT_ERROR_STATUS,
+  VALIDATION_ERROR_STATUS,
+  CAST_ERROR_STATUS,
+  NOT_FOUND_ERROR_STATUS,
+} = require("../utils/errors");
 
 const createItem = (req, res) => {
   const { name, weather, imageURL } = req.body;
@@ -13,7 +19,12 @@ const createItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return handleError(res, err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(VALIDATION_ERROR_STATUS)
+          .send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
     });
 };
 
@@ -21,7 +32,10 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
-      handleError(res, err);
+      if (err.name === "CastError") {
+        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
     });
 };
 
@@ -33,7 +47,15 @@ const updateItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
-      handleError(res, err);
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(NOT_FOUND_ERROR_STATUS)
+          .send({ message: "Item not found" });
+      }
+      if (err.name === "CastError") {
+        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
     });
 };
 
@@ -44,7 +66,15 @@ const deleteItem = (req, res) => {
     .orFail()
     .then(() => res.status(204).send({}))
     .catch((err) => {
-      handleError(res, err);
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(NOT_FOUND_ERROR_STATUS)
+          .send({ message: "Item not found" });
+      }
+      if (err.name === "CastError") {
+        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
     });
 };
 
@@ -61,9 +91,14 @@ const likeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND_ERROR_STATUS)
+          .send({ message: "Item not found" });
       }
-      return handleError(res, err);
+      if (err.name === "CastError") {
+        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
     });
 };
 
@@ -80,9 +115,14 @@ const unlikeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND_ERROR_STATUS)
+          .send({ message: "Item not found" });
       }
-      return handleError(res, err);
+      if (err.name === "CastError") {
+        return res.status(CAST_ERROR_STATUS).send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_STATUS).send({ message: err.message });
     });
 };
 

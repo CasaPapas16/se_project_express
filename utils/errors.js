@@ -1,9 +1,12 @@
 const DEFAULT_ERROR_STATUS = 500;
+const VALIDATION_ERROR_STATUS = 400;
+const CAST_ERROR_STATUS = 400;
+const NOT_FOUND_ERROR_STATUS = 404;
 
 const ERROR_STATUS_MAP = {
-  ValidationError: 400,
-  CastError: 400,
-  DocumentNotFoundError: 404,
+  ValidationError: VALIDATION_ERROR_STATUS,
+  CastError: CAST_ERROR_STATUS,
+  DocumentNotFoundError: NOT_FOUND_ERROR_STATUS,
 };
 
 const createErrorResponse = (
@@ -33,4 +36,11 @@ const handleError = (
   return res.status(statusCode).send({ message });
 };
 
-module.exports = { createErrorResponse, handleError };
+module.exports = {
+  createErrorResponse,
+  handleError,
+  DEFAULT_ERROR_STATUS,
+  VALIDATION_ERROR_STATUS,
+  CAST_ERROR_STATUS,
+  NOT_FOUND_ERROR_STATUS,
+};
