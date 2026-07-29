@@ -7,12 +7,13 @@ const {
 } = require("../utils/errors");
 
 const createItem = (req, res) => {
-  const { name, weather, imageURL } = req.body;
+  const { name, weather, imageURL, imageUrl } = req.body;
   const userId = req.user && req.user._id;
+  const normalizedImageUrl = imageURL || imageUrl;
 
   console.log("Authenticated user ID:", userId);
 
-  ClothingItem.create({ name, weather, imageURL })
+  ClothingItem.create({ name, weather, imageURL: normalizedImageUrl })
     .then((item) => {
       res.status(201).send(item);
     })
@@ -40,9 +41,14 @@ const getItems = (req, res) => {
 
 const updateItem = (req, res) => {
   const { itemId } = req.params;
-  const { imageURL } = req.body;
+  const { imageURL, imageUrl } = req.body;
+  const normalizedImageUrl = imageURL || imageUrl;
 
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageURL } }, { new: true })
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $set: { imageURL: normalizedImageUrl } },
+    { new: true }
+  )
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
@@ -63,7 +69,7 @@ const deleteItem = (req, res) => {
 
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then(() => res.status(204).send({}))
+    .then(() => res.status(200).send({}))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
         return res

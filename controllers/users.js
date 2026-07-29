@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const {
-  handleError,
   DEFAULT_ERROR_STATUS,
   VALIDATION_ERROR_STATUS,
   CAST_ERROR_STATUS,
@@ -13,7 +12,7 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return handleError(res, err);
+      return res.status(NOT_FOUND_ERROR_STATUS).send({ message: err.message });
     });
 };
 
