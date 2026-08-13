@@ -6,21 +6,11 @@ const {
   DEFAULT_ERROR_STATUS,
   VALIDATION_ERROR_STATUS,
   CAST_ERROR_STATUS,
+  UNAUTHORIZED_ERROR_STATUS,
   NOT_FOUND_ERROR_STATUS,
   CONFLICT_ERROR_STATUS,
 } = require("../utils/errors");
 
-// GET /users
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(200).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(NOT_FOUND_ERROR_STATUS)
-        .send({ message: "Invalid data" });
-    });
-};
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -57,33 +47,12 @@ const createUser = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
-
-  User.findById(userId)
-    .orFail()
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND_ERROR_STATUS)
-          .send({ message: "User not found" });
-      }
-      if (err.name === "CastError") {
-        return res.status(CAST_ERROR_STATUS).send({ message: "Invalid data" });
-      }
-      return res
-        .status(DEFAULT_ERROR_STATUS)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
 
 const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).send({ message: "Incorrect email or password" });
+    return res.status(400).send({ message: "Email and password are required" });
   }
 
   return User.findUserByCredentials(email, password)
@@ -95,7 +64,9 @@ const login = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(401).send({ message: "Incorrect email or password" });
+      return res
+        .status(UNAUTHORIZED_ERROR_STATUS)
+        .send({ message: "Incorrect email or password" });
     });
 };
 
@@ -155,9 +126,7 @@ const updateUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
-  getUser,
   login,
   getCurrentUser,
   updateUser,

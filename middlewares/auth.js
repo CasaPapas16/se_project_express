@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
+const { UNAUTHORIZED_ERROR_STATUS } = require("../utils/errors");
 
 const allowedPublicRoutes = [
   { path: "/signin", method: "POST" },
@@ -21,7 +22,9 @@ const auth = (req, res, next) => {
   const { authorization } = headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return res.status(401).send({ message: "Unauthorized" });
+    return res
+      .status(UNAUTHORIZED_ERROR_STATUS)
+      .send({ message: "Unauthorized" });
   }
 
   const token = authorization.replace("Bearer ", "");
@@ -30,7 +33,9 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return res.status(401).send({ message: "Unauthorized" });
+    return res
+      .status(UNAUTHORIZED_ERROR_STATUS)
+      .send({ message: "Unauthorized" });
   }
 
   req.user = payload;

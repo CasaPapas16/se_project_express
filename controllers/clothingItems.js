@@ -3,6 +3,7 @@ const {
   DEFAULT_ERROR_STATUS,
   VALIDATION_ERROR_STATUS,
   CAST_ERROR_STATUS,
+  FORBIDDEN_ERROR_STATUS,
   NOT_FOUND_ERROR_STATUS,
 } = require("../utils/errors");
 
@@ -59,7 +60,9 @@ const deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (String(item.owner) !== String(userId)) {
-        return res.status(403).send({ message: "Forbidden" });
+        return res
+          .status(FORBIDDEN_ERROR_STATUS)
+          .send({ message: "Forbidden" });
       }
 
       return item.deleteOne().then(() => res.status(200).send({}));
