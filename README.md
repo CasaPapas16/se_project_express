@@ -15,3 +15,5 @@ this project is focusing on creating a database using express, mongoDB/mongoose,
 **Features**
 I have implemented a like and unlike feature, deleting cards from the database, logging middleware for requests and errors, and the ability to find a user via ID.
 
+[here] is a few links for a brief overview of the project and the journey I have taken to build it.
+[Adrian Sandoval project pitch 1] https://www.loom.com/share/e39d27caae8148bda47b1d42bbc7717b

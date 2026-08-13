@@ -83,7 +83,7 @@ const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(401).send({ message: "Incorrect email or password" });
+    return res.status(400).send({ message: "Incorrect email or password" });
   }
 
   return User.findUserByCredentials(email, password)
