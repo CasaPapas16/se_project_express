@@ -19,6 +19,7 @@ app.post("/signin", login);
 app.post("/signup", createUser);
 
 const auth = require("./middlewares/auth");
+
 app.use(auth);
 app.use("/", mainRouter);
 
