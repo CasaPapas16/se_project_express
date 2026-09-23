@@ -6,6 +6,43 @@ const FORBIDDEN_ERROR_STATUS = 403;
 const NOT_FOUND_ERROR_STATUS = 404;
 const CONFLICT_ERROR_STATUS = 409;
 
+const createErrorConstructor = (name, statusCode, defaultMessage) => {
+  const ErrorConstructor = function ErrorConstructor(message = defaultMessage) {
+    const error = new Error(message);
+    error.name = name;
+    error.statusCode = statusCode;
+    return error;
+  };
+
+  return ErrorConstructor;
+};
+
+const BadRequestError = createErrorConstructor(
+  "BadRequestError",
+  VALIDATION_ERROR_STATUS,
+  "Invalid data"
+);
+const UnauthorizedError = createErrorConstructor(
+  "UnauthorizedError",
+  UNAUTHORIZED_ERROR_STATUS,
+  "Unauthorized"
+);
+const ForbiddenError = createErrorConstructor(
+  "ForbiddenError",
+  FORBIDDEN_ERROR_STATUS,
+  "Forbidden"
+);
+const NotFoundError = createErrorConstructor(
+  "NotFoundError",
+  NOT_FOUND_ERROR_STATUS,
+  "Requested resource not found"
+);
+const ConflictError = createErrorConstructor(
+  "ConflictError",
+  CONFLICT_ERROR_STATUS,
+  "Conflict error"
+);
+
 const ERROR_STATUS_MAP = {
   ValidationError: VALIDATION_ERROR_STATUS,
   CastError: CAST_ERROR_STATUS,
@@ -40,6 +77,11 @@ const handleError = (
 };
 
 module.exports = {
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+  ConflictError,
   createErrorResponse,
   handleError,
   DEFAULT_ERROR_STATUS,
